@@ -1,5 +1,6 @@
 //run mongodb C:\Program Files\MongoDB\Server\3.6\bin>mongod.exe --dbpath /Users/Askhat/mongo_data
 
+const _ = require('lodash');
 const express = require('express');
 const bodyParser = require('body-parser');
 const {ObjectID} = require('mongodb');
@@ -64,7 +65,37 @@ app.delete('/todos/:id', (req, res) => {
 		res.send({todo});
 	}, e => {
 		res.status(400).send(e);
-	})
+	});
+});
+
+app.patch('/todos/:id', (req, res) => {
+	var id = req.params.id;
+
+	//takes object and array that we pull off is they exist
+	// we want allow to update just text and completed properties
+	var body = _.pick(req.body, ['text', 'completed']);
+	
+	if(!ObjectID.isValid(id)){
+		res.status(404).send();
+	}
+
+	//checking completed value;; check completed valey to be boolean
+	// and if it's true
+	if(_.isBoolean(body.completed) && body.completed) {
+		body.completedAt = new Date().getTime(); //return number of milliseconds
+	} else {
+		body.completed = false;
+		body.completedAt = null;
+	}
+
+	Todo.findByIdAndUpdate(id, {$set: body}, {new: true})
+		.then(todo => {
+			if(!todo) {
+				return res.status(404).send();
+			}
+			
+			res.send({todo});
+		}).catch(e => {res.status(404).send(e)})
 })
 
 
