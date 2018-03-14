@@ -97,7 +97,23 @@ app.patch('/todos/:id', (req, res) => {
 
 			res.send({todo});
 		}).catch(e => {res.status(404).send()})
-})
+});
+
+//POST /users
+app.post('/users', (req, res) => {
+	// take filled email and password from req.body
+	var body = _.pick(req.body, ['email', 'password']);
+	var user = new User(body);
+
+	// token are needed to get access after auth
+
+	user.save().then(() => {
+		return user.generateAuthToken();
+		//res.send(user);
+	}).then((token) => {
+		res.header('x-auth', token).send(user);//x- means create custom header
+	}).catch(e => {res.status(400).send(e)});
+});
 
 
 app.listen(port, () => {
