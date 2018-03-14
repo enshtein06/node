@@ -1,5 +1,6 @@
 //run mongodb C:\Program Files\MongoDB\Server\3.6\bin>mongod.exe --dbpath /Users/Askhat/mongo_data
 
+require('./config/config');
 const _ = require('lodash');
 const express = require('express');
 const bodyParser = require('body-parser');
