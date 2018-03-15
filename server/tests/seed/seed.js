@@ -6,13 +6,14 @@ const {User} = require('./../../models/user');
 
 const userOneId = new ObjectID();
 const userTwoId = new ObjectID();
+
 const users = [{
 	_id: userOneId,
 	email: 'enshtein06@gmail.com',
 	password: '1234567890',
 	tokens: [{
 		access: 'auth',
-		token: jwt.sign({_id: userOneId, access: 'auth'}, 'abc123').toString()
+		token: jwt.sign({_id: userOneId, access: 'auth'}, process.env.JWT_SECRET).toString()
 	}]
 }, {
 	_id: userTwoId,
@@ -20,7 +21,7 @@ const users = [{
 	password: 'userTwoPassword',
 	tokens: [{
 		access: 'auth',
-		token: jwt.sign({_id: userTwoId, access: 'auth'}, 'abc123').toString()
+		token: jwt.sign({_id: userTwoId, access: 'auth'}, process.env.JWT_SECRET).toString()
 	}]
 }]
 //create dummy todos to avoid db being empty
