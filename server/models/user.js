@@ -82,6 +82,31 @@ UserSchema.statics.findByToken = function (token) {
   });
 };
 
+//we try to find user by email
+UserSchema.statics.findByCredentials = function(email, password) {
+	var user = this;
+
+	//return promise
+	return User.findOne({email}).then((user) => {
+		if(!user) {
+			//if we return reject it'll automaticly trigger catch block in code:
+			//app.post('/users/login', (req, res) => {})
+			return Promise.reject();
+		}
+
+		//bcrypt.compare only supports callback and not support Promises
+		return new Promise((resolve, reject) => {
+			bcrypt.compare(password, user.password, (err, res) => {
+				if(res) {
+					resolve(user);
+				} else {
+					reject();
+				}
+			})
+		})
+	});
+};
+
 //pre methods runs code before we save
 UserSchema.pre('save', function(next) {
 	var user = this;
