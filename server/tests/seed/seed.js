@@ -17,15 +17,21 @@ const users = [{
 }, {
 	_id: userTwoId,
 	email: 'jen@example.com',
-	password: 'userTwoPassword'
+	password: 'userTwoPassword',
+	tokens: [{
+		access: 'auth',
+		token: jwt.sign({_id: userTwoId, access: 'auth'}, 'abc123').toString()
+	}]
 }]
 //create dummy todos to avoid db being empty
 const todos = [{
 	text: 'First test todo',
-	_id: new ObjectID()
+	_id: new ObjectID(),
+	_creator: userOneId
 }, {
 	text: 'Second test todo',
-	_id: new ObjectID()
+	_id: new ObjectID(),
+	_creator: userTwoId
 }];
 
 //to setup database. make sure that db are empty
